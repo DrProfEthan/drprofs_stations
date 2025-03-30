@@ -1,0 +1,7 @@
+grf {
+	grfid: <literal-string>;
+	name: <string>;
+	desc: <string>;
+	version: <expression>;
+	min_compatible_version: <expression>;
+}
