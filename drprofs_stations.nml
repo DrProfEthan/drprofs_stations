@@ -1,7 +1,30 @@
 grf {
-	grfid: <literal-string>;
-	name: <string>;
-	desc: <string>;
-	version: <expression>;
-	min_compatible_version: <expression>;
+	grfid: "DP\01\01";
+	name: string(STR_GRF_NAME);
+	desc: string(STR_GRF_DESCRIPTION);
+	version: 0;
+	min_compatible_version: 0;
+}
+
+spriteset(spriteset_plain_wooden_platforms, "gfx/plain_wooden00.png") {
+    //left_x, upper_y, width, height, offset_x, offset_y
+    [ 0,      0,        8,    18,      -3,       -10]
+    [ 16,     0,       20,    16,     -14,        -7]
+    [ 48,     0,       28,    12,     -14,        -6]
+    [ 96,     0,       20,    16,      -6,        -7]
+}
+
+item(FEAT_ROADVEHS, item_flatbed_truck_1) {
+    property {
+        class: string(DPSP);
+        classname: string(STR_GRF_DPSP_NAME)
+        name: string(STR_NAME_PLATFORM_1);
+        draw_pylon_tiles: bitmask(STAT_ALL_TILES);
+        /* Visual effect is left at default (no effect) */
+    }
+
+    graphics {
+        default: spritegroup_flatbed_truck_1_goods;
+        
+    }
 }
