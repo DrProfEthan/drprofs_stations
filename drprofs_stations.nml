@@ -1,32 +1,70 @@
+/*
+ * This file is aimed to provide an example on how to code a Station in NML.
+ * To keep the code readable, not every property or variable is documented in
+ * detail, refer to the station-specific reference in the documentation.
+ *
+ * The NewGRF implements a conversion of CHIPS Cow pens.
+ *
+ * Apart from this file, you will also need the following
+ * - Graphics, found in cows_cargo.png (in the same folder)
+ * - Language files, to be placed in the 'lang' folder.
+ *      Currently english.lng is supplied.
+ */
+
+ /*
+ * First, define a grf block. This defines some basic properties of the grf,
+ * which are required for the grf to be valid and loadable.
+ */
 grf {
-	grfid: "DP\01\01";
-	name: string(STR_GRF_NAME);
-	desc: string(STR_GRF_DESCRIPTION);
-	version: 1;
-	min_compatible_version: 1;
+    /* This grf is part of NML, therefore "NML" is chosen as the first three
+     * characters of the GRFID. It is the seventh real grf defined as part of
+     * NML (the first is the train example), therefore the last character is
+     * set to 6. Successive grfs will have 7, 8, etc. there, to make sure each
+     * example grf has a unique GRFID.
+     */
+    grfid: "NML\06";
+    /* GRF name and description strings are defined in the lang files */
+    name: string(STR_GRF_NAME);
+    desc: string(STR_GRF_DESCRIPTION);
+    /* This is the first version, start numbering at 1. */
+    version: 1;
+    min_compatible_version: 1;
+    /* This NewGRF has no parameters. See the train example NewGRF for parameter
+     * usage
+     */
 }
 
-// if (version_openttd(1,2,0,22723) > openttd_version) {
-//     error(FATAL, REQUIRES_OPENTTD, string(STR_VERSION_22723));
-// }
-
-// cargotable {
-//     LVST
-// }
-
-
-spriteset(spriteset_plain_wooden_platforms0, "gfx/plain_wooden00.png") {
-    //left_x, upper_y, width, height, offset_x, offset_y
-    [ 8,      7,        122,    64,      -60,       -10]
-    [ 16,     0,       122,    64,     -60,        -10]
-    [ 48,     0,       122,    64,     -60,        -10]
-    [ 96,     0,       122,    64,      -60,        -10]
+/* Using parametrized sprite layouts are only valid in OpenTTD r22723 or later.
+ * Earlier versions will choke on those and otherwise disable the NewGRF.
+ */
+if (version_openttd(1,2,0,22723) > openttd_version) {
+    error(FATAL, REQUIRES_OPENTTD, string(STR_VERSION_22723));
 }
 
+cargotable {
+    LVST
+}
 
-spritelayout wooden_platforms_X1(a) {
+spriteset (single_wooden_empty, "cows_cargo.png") {
+    [  10, 10, 64, 65, -31, -34 ]
+    [  80, 10, 64, 65, -31, -34 ]
+    [  150, 10, 64, 65, -31, -34 ]
+    [ 220, 10, 64, 65, -31, -34 ]
+}
+
+// spriteset (single_wooden_half, "cows_cargo.png") {
+//     [  80, 10, 64, 65, -31, -34 ]
+//     [ 290, 10, 64, 65, -31, -34 ]
+// }
+
+// spriteset (single_wooden_full, "cows_cargo.png") {
+//     [ 150, 10, 64, 65, -31, -34 ]
+//     [ 360, 10, 64, 65, -31, -34 ]
+// }
+
+spritelayout single_wooden_far_X(a) {
     ground {
-        sprite: 2022 + a; // prevent railtype offset
+        sprite: GROUNDSPRITE_RAIL_X; // prevent railtype offset
     }
     building {
         sprite: DEFAULT(0); // first sprite in active spriteset
@@ -36,61 +74,98 @@ spritelayout wooden_platforms_X1(a) {
     }
 }
 
-spritelayout wooden_platforms_X2(a) {
+spritelayout single_wooden_near_X(a) {
     ground {
-        sprite: 2022 + a; // prevent railtype offset
+        sprite: GROUNDSPRITE_RAIL_X; // prevent railtype offset
     }
     building {
-        sprite: DEFAULT(1); // second sprite in active spriteset
+        sprite: DEFAULT(1); // first sprite in active spriteset
         zextent: 36;
         recolour_mode: RECOLOUR_REMAP;
         palette:       PALETTE_USE_DEFAULT;
     }
 }
 
-spritelayout wooden_platforms_Y1(a) {
+spritelayout single_wooden_far_Y(a) {
     ground {
-        sprite: 2022 + a;
+        sprite: GROUNDSPRITE_RAIL_Y; // prevent railtype offset
     }
     building {
-        sprite: DEFAULT(2);
+        sprite: DEFAULT(2); // second sprite in active spriteset
         zextent: 36;
         recolour_mode: RECOLOUR_REMAP;
         palette:       PALETTE_USE_DEFAULT;
     }
 }
 
-spritelayout wooden_platforms_Y2(a) {
+spritelayout single_wooden_near_Y(a) {
     ground {
-        sprite: 2022 + a;
+        sprite: GROUNDSPRITE_RAIL_Y; // prevent railtype offset
     }
     building {
-        sprite: DEFAULT(3);
+        sprite: DEFAULT(3); // second sprite in active spriteset
         zextent: 36;
         recolour_mode: RECOLOUR_REMAP;
         palette:       PALETTE_USE_DEFAULT;
     }
 }
 
-spritegroup spritegroup_plain_wooden_platforms {
-    loaded:  [spriteset_plain_wooden_platforms0];
-    loading: [spriteset_plain_wooden_platforms0];
-}
+// spritegroup single_wooden_1 {
+//     little: [single_wooden_empty, single_wooden_half];
+//     lots:   single_wooden_full;
+// }
 
+// spritegroup single_wooden_2 {
+//     little: [single_wooden_empty, single_wooden_half, single_wooden_full];
+//     lots:   single_wooden_full;
+// }
 
-item(FEAT_STATIONS, plain_wooden_platforms) {
+// random_switch(FEAT_STATIONS, TILE, random_single_wooden) {
+//     1: single_wooden_1;
+//     1: single_wooden_2;
+// }
+
+/* Define the station itself */
+item(FEAT_STATIONS, single_wooden_far) {
     property {
-        class: "DPSP";
-        classname: string(STR_GRF_DPSP_NAME);
-        name: string(STR_NAME_PLATFORM_1);
+        /* The class allows to sort stations into categories. */
+        class:                  "NML_";
+        /* If no other NewGRF provides this class before us, we have to name it */
+        classname:              string(STR_NAME_STATCLASS);
+        /* Name of this particular station */
+        name:                   string(STR_NAME_STATION);
         cargo_threshold: 160;
-        // draw_pylon_tiles: bitmask(STAT_ALL_TILES);
-        /* Visual effect is left at default (no effect) */
+        // tile_flags: [
+        //     bitmask(STAT_TILE_NOWIRE, STAT_TILE_BLOCKED),
+        //     bitmask(STAT_TILE_NOWIRE, STAT_TILE_BLOCKED)
+        // ];
     }
-
     graphics {
-        sprite_layouts: [wooden_platforms_X1(0), wooden_platforms_Y1(0), wooden_platforms_X2(0), wooden_platforms_Y2(0)];
+        sprite_layouts: [single_wooden_far_X(0), single_wooden_far_Y(0)];
         select_tile_type: 0;
-        default: spriteset_plain_wooden_platforms0;
+        purchase: single_wooden_empty;
+        single_wooden_empty;
+    }
+}
+
+item(FEAT_STATIONS, single_wooden_near) {
+    property {
+        /* The class allows to sort stations into categories. */
+        class:                  "NML_";
+        /* If no other NewGRF provides this class before us, we have to name it */
+        classname:              string(STR_NAME_STATCLASS);
+        /* Name of this particular station */
+        name:                   string(STR_NAME_STATION);
+        cargo_threshold: 160;
+        // tile_flags: [
+        //     bitmask(STAT_TILE_NOWIRE, STAT_TILE_BLOCKED),
+        //     bitmask(STAT_TILE_NOWIRE, STAT_TILE_BLOCKED)
+        // ];
+    }
+    graphics {
+        sprite_layouts: [single_wooden_near_X(0), single_wooden_near_Y(0)];
+        select_tile_type: 0;
+        purchase: single_wooden_empty;
+        single_wooden_empty;
     }
 }
