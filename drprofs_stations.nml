@@ -49,18 +49,18 @@ spriteset (single_wooden_empty, "cows_cargo.png") {
     [  10, 10, 64, 65, -31, -34 ]
     [  80, 10, 64, 65, -31, -34 ]
     [  150, 10, 64, 65, -31, -34 ]
-    [ 220, 10, 64, 65, -31, -34 ]
+    [  220, 10, 64, 65, -31, -34 ]
 }
 
-// spriteset (single_wooden_half, "cows_cargo.png") {
-//     [  80, 10, 64, 65, -31, -34 ]
-//     [ 290, 10, 64, 65, -31, -34 ]
-// }
+spriteset (double_wooden_empty, "cows_cargo.png") {
+    [  290, 10, 64, 65, -31, -34 ]
+    [  360, 10, 64, 65, -31, -34 ]
+}
 
-// spriteset (single_wooden_full, "cows_cargo.png") {
-//     [ 150, 10, 64, 65, -31, -34 ]
-//     [ 360, 10, 64, 65, -31, -34 ]
-// }
+spriteset (single_wooden_ramps, "cows_cargo.png") {
+    [  10, 81, 64, 65, -31, -34 ]
+    [  80, 81, 64, 65, -31, -34 ]
+}
 
 spritelayout single_wooden_far_X(a) {
     ground {
@@ -104,6 +104,54 @@ spritelayout single_wooden_near_Y(a) {
     }
     building {
         sprite: DEFAULT(3); // second sprite in active spriteset
+        zextent: 36;
+        recolour_mode: RECOLOUR_REMAP;
+        palette:       PALETTE_USE_DEFAULT;
+    }
+}
+
+spritelayout single_wooden_ramp_far_X(a) {
+    ground {
+        sprite: GROUNDSPRITE_RAIL_X; // prevent railtype offset
+    }
+    building {
+        sprite: DEFAULT(0); // first sprite in active spriteset
+        zextent: 36;
+        recolour_mode: RECOLOUR_REMAP;
+        palette:       PALETTE_USE_DEFAULT;
+    }
+}
+
+spritelayout single_wooden_ramp_near_X(a) {
+    ground {
+        sprite: GROUNDSPRITE_RAIL_X; // prevent railtype offset
+    }
+    building {
+        sprite: DEFAULT(1); // first sprite in active spriteset
+        zextent: 36;
+        recolour_mode: RECOLOUR_REMAP;
+        palette:       PALETTE_USE_DEFAULT;
+    }
+}
+
+spritelayout double_wooden_X(a) {
+    ground {
+        sprite: GROUNDSPRITE_RAIL_X; // prevent railtype offset
+    }
+    building {
+        sprite: DEFAULT(0); // second sprite in active spriteset
+        zextent: 36;
+        recolour_mode: RECOLOUR_REMAP;
+        palette:       PALETTE_USE_DEFAULT;
+    }
+}
+
+spritelayout double_wooden_Y(a) {
+    ground {
+        sprite: GROUNDSPRITE_RAIL_Y; // prevent railtype offset
+    }
+    building {
+        sprite: DEFAULT(1); // second sprite in active spriteset
         zextent: 36;
         recolour_mode: RECOLOUR_REMAP;
         palette:       PALETTE_USE_DEFAULT;
@@ -167,5 +215,71 @@ item(FEAT_STATIONS, single_wooden_near) {
         select_tile_type: 0;
         purchase: single_wooden_empty;
         single_wooden_empty;
+    }
+}
+
+item(FEAT_STATIONS, single_wooden_ramp_near) {
+    property {
+        /* The class allows to sort stations into categories. */
+        class:                  "NML_";
+        /* If no other NewGRF provides this class before us, we have to name it */
+        classname:              string(STR_NAME_STATCLASS);
+        /* Name of this particular station */
+        name:                   string(STR_NAME_STATION);
+        cargo_threshold: 160;
+        // tile_flags: [
+        //     bitmask(STAT_TILE_NOWIRE, STAT_TILE_BLOCKED),
+        //     bitmask(STAT_TILE_NOWIRE, STAT_TILE_BLOCKED)
+        // ];
+    }
+    graphics {
+        sprite_layouts: [single_wooden_ramp_near_X(0), single_wooden_near_Y(0)];
+        select_tile_type: 0;
+        purchase: single_wooden_ramps;
+        single_wooden_ramps;
+    }
+}
+
+item(FEAT_STATIONS, single_wooden_ramp_far) {
+    property {
+        /* The class allows to sort stations into categories. */
+        class:                  "NML_";
+        /* If no other NewGRF provides this class before us, we have to name it */
+        classname:              string(STR_NAME_STATCLASS);
+        /* Name of this particular station */
+        name:                   string(STR_NAME_STATION);
+        cargo_threshold: 160;
+        // tile_flags: [
+        //     bitmask(STAT_TILE_NOWIRE, STAT_TILE_BLOCKED),
+        //     bitmask(STAT_TILE_NOWIRE, STAT_TILE_BLOCKED)
+        // ];
+    }
+    graphics {
+        sprite_layouts: [single_wooden_ramp_far_X(0), single_wooden_near_Y(0)];
+        select_tile_type: 0;
+        purchase: single_wooden_ramps;
+        single_wooden_ramps;
+    }
+}
+
+item(FEAT_STATIONS, double_wooden) {
+    property {
+        /* The class allows to sort stations into categories. */
+        class:                  "NML_";
+        /* If no other NewGRF provides this class before us, we have to name it */
+        classname:              string(STR_NAME_STATCLASS);
+        /* Name of this particular station */
+        name:                   string(STR_NAME_STATION);
+        cargo_threshold: 160;
+        // tile_flags: [
+        //     bitmask(STAT_TILE_NOWIRE, STAT_TILE_BLOCKED),
+        //     bitmask(STAT_TILE_NOWIRE, STAT_TILE_BLOCKED)
+        // ];
+    }
+    graphics {
+        sprite_layouts: [double_wooden_X(0), double_wooden_Y(0)];
+        select_tile_type: 0;
+        purchase: double_wooden_empty;
+        double_wooden_empty;
     }
 }
